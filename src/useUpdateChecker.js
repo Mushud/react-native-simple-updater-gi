@@ -14,7 +14,11 @@ import { MMKV } from "react-native-mmkv";
 
 const storage = new MMKV();
 
-export default function useUpdateChecker({ updateUrl, autoCheck = true }) {
+export default function useUpdateChecker({
+  updateUrl,
+  autoCheck = true,
+  autoDownload = false,
+}) {
   const [progress, setProgress] = useState(0);
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const [remoteInfo, setRemoteInfo] = useState(null);
@@ -38,6 +42,11 @@ export default function useUpdateChecker({ updateUrl, autoCheck = true }) {
 
       setUpdateAvailable(true);
       setRemoteInfo(response.data.data);
+
+      // 👇 Automatically download if flag is enabled
+      if (autoDownload) {
+        await downloadAndInstallAPK(response.data.data.apkSignedUrl);
+      }
     } catch (e) {
       console.log("Update Check Failed:", e);
       ToastAndroid.show("Update check failed", ToastAndroid.LONG);
@@ -48,7 +57,6 @@ export default function useUpdateChecker({ updateUrl, autoCheck = true }) {
     if (!remoteInfo) return;
     await downloadAndInstallAPK(remoteInfo.apkSignedUrl);
   };
-
   const downloadAndInstallAPK = async (apkUrl) => {
     const downloadDir = RNFS.DownloadDirectoryPath;
     const filePath = `${downloadDir}/update-latest.apk`;

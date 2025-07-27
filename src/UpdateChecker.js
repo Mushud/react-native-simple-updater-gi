@@ -1,11 +1,16 @@
 import React from "react";
-import { View, Text, StyleSheet, Button } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import useUpdateChecker from "./useUpdateChecker";
 
-const UpdateChecker = ({ updateUrl, autoCheck = true }) => {
+const UpdateChecker = ({
+  updateUrl,
+  autoCheck = true,
+  autoDownload = false,
+}) => {
   const { updateAvailable, progress, triggerUpdate } = useUpdateChecker({
     updateUrl,
     autoCheck,
+    autoDownload,
   });
 
   if (!updateAvailable) return null;
@@ -16,7 +21,12 @@ const UpdateChecker = ({ updateUrl, autoCheck = true }) => {
         <Text style={styles.text}>Update Available</Text>
         <Text style={styles.text}>Progress: {progress.toFixed(2)}%</Text>
       </View>
-      <Button title="Update Now" onPress={triggerUpdate} color="white" />
+
+      {progress === 0 && !autoDownload && (
+        <TouchableOpacity style={styles.button} onPress={triggerUpdate}>
+          <Text style={styles.buttonText}>Update Now</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -30,6 +40,16 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "white",
+    fontWeight: "bold",
+  },
+  button: {
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    backgroundColor: "white",
+    borderRadius: 6,
+  },
+  buttonText: {
+    color: "black",
     fontWeight: "bold",
   },
 });
