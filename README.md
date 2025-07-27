@@ -66,12 +66,12 @@ Your `updateUrl` must return a JSON response structured like:
 ###  Simple Usage with Auto Check & Manual Download
 
 ```jsx
-import UpdatePrompt from 'react-native-simple-updater';
+import { UpdateChecker } from 'react-native-simple-updater';
 
 export default function App() {
   return (
     <>
-      <UpdatePrompt
+      <UpdateChecker
         updateUrl="https://api.yourserver.com/apps/myapp/latest"
         autoCheck={true}
         autoDownload={false}
@@ -86,7 +86,7 @@ export default function App() {
 ###  Auto Download on Detection
 
 ```jsx
-<UpdatePrompt
+<UpdateChecker
   updateUrl="https://api.yourserver.com/apps/myapp/latest"
   autoCheck={true}
   autoDownload={true}
