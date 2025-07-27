@@ -1,6 +1,6 @@
 {
   "name": "react-native-simple-updater",
-  "version": "1.0.1",
+  "version": "1.0.7",
   "main": "src/index.js",
   "license": "MIT",
   "peerDependencies": {

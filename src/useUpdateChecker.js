@@ -22,6 +22,8 @@ export default function useUpdateChecker({
   const [progress, setProgress] = useState(0);
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const [remoteInfo, setRemoteInfo] = useState(null);
+  const [installPending, setInstallPending] = useState(false);
+  const [apkFilePath, setApkFilePath] = useState(null);
 
   useEffect(() => {
     if (Platform.OS === "android" && autoCheck) {
@@ -38,14 +40,29 @@ export default function useUpdateChecker({
       if (!latestVersion || latestVersion === currentVersion) return;
 
       const cachedVersion = storage.getString("lastDownloadedVersion");
-      if (cachedVersion === latestVersion) return;
+      const isPending = storage.getBoolean("installPending");
 
+      const downloadDir = RNFS.DownloadDirectoryPath;
+      const path = `${downloadDir}/update-latest.apk`;
+      const apkExists = await RNFS.exists(path);
+
+      // Handle already downloaded APK
+      if (cachedVersion === latestVersion && isPending && apkExists) {
+        setInstallPending(true);
+        setApkFilePath(path);
+        setUpdateAvailable(true);
+        return;
+      }
+
+      // Otherwise prepare to download
       setUpdateAvailable(true);
       setRemoteInfo(response.data.data);
 
-      // 👇 Automatically download if flag is enabled
       if (autoDownload) {
-        await downloadAndInstallAPK(response.data.data.apkSignedUrl);
+        await downloadAndInstallAPK(
+          response.data.data.apkSignedUrl,
+          response?.data?.data?.version
+        );
       }
     } catch (e) {
       console.log("Update Check Failed:", e);
@@ -55,9 +72,12 @@ export default function useUpdateChecker({
 
   const triggerUpdate = async () => {
     if (!remoteInfo) return;
-    await downloadAndInstallAPK(remoteInfo.apkSignedUrl);
+    await downloadAndInstallAPK(remoteInfo.apkSignedUrl, remoteInfo.version);
   };
-  const downloadAndInstallAPK = async (apkUrl) => {
+
+  const downloadAndInstallAPK = async (apkUrl, version) => {
+    if (!version || !apkUrl) return;
+
     const downloadDir = RNFS.DownloadDirectoryPath;
     const filePath = `${downloadDir}/update-latest.apk`;
 
@@ -75,14 +95,21 @@ export default function useUpdateChecker({
       };
 
       await RNFS.downloadFile(options).promise;
-      storage.set("lastDownloadedVersion", remoteInfo.version);
-      await installAPK(filePath);
+
+      storage.set("lastDownloadedVersion", version);
+      storage.set("installPending", true);
+
+      setApkFilePath(filePath);
+      setInstallPending(true);
     } catch (error) {
       Alert.alert("Download Failed", "Could not download the APK.");
+      console.error(error);
     }
   };
 
-  const installAPK = async (filePath) => {
+  const triggerInstall = async () => {
+    if (!apkFilePath) return;
+
     if (Platform.Version >= 33) {
       const hasPermission = await PermissionsAndroid.check(
         PermissionsAndroid.PERMISSIONS.REQUEST_INSTALL_PACKAGES
@@ -109,17 +136,22 @@ export default function useUpdateChecker({
       }
     }
 
-    RNFetchBlob.android.actionViewIntent(
-      filePath,
-      "application/vnd.android.package-archive"
-    );
+    try {
+      RNFetchBlob.android.actionViewIntent(
+        apkFilePath,
+        "application/vnd.android.package-archive"
+      );
+    } catch (e) {
+      Alert.alert("Install Failed", "Unable to start APK installer.");
+      console.error(e);
+    }
   };
 
   return {
     updateAvailable,
     progress,
-    remoteInfo,
     triggerUpdate,
-    checkForUpdate,
+    triggerInstall,
+    installPending,
   };
 }

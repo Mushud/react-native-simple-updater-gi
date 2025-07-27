@@ -7,11 +7,13 @@ const UpdateChecker = ({
   autoCheck = true,
   autoDownload = false,
 }) => {
-  const { updateAvailable, progress, triggerUpdate } = useUpdateChecker({
-    updateUrl,
-    autoCheck,
-    autoDownload,
-  });
+  const {
+    updateAvailable,
+    progress,
+    triggerUpdate,
+    triggerInstall,
+    installPending,
+  } = useUpdateChecker({ updateUrl, autoCheck, autoDownload });
 
   if (!updateAvailable) return null;
 
@@ -19,12 +21,24 @@ const UpdateChecker = ({
     <View style={styles.banner}>
       <View style={{ flex: 1 }}>
         <Text style={styles.text}>Update Available</Text>
-        <Text style={styles.text}>Progress: {progress.toFixed(2)}%</Text>
+        <Text style={styles.text}>
+          {progress > 0
+            ? `Downloading: ${progress.toFixed(2)}%`
+            : "Ready to update"}
+        </Text>
       </View>
 
-      {progress === 0 && !autoDownload && (
+      {/* ✅ If not downloading and install is not pending, show Update Now */}
+      {progress === 0 && !installPending && !autoDownload && (
         <TouchableOpacity style={styles.button} onPress={triggerUpdate}>
           <Text style={styles.buttonText}>Update Now</Text>
+        </TouchableOpacity>
+      )}
+
+      {/* ✅ If download is done, but not installed yet */}
+      {installPending && (
+        <TouchableOpacity style={styles.button} onPress={triggerInstall}>
+          <Text style={styles.buttonText}>Install Update</Text>
         </TouchableOpacity>
       )}
     </View>
