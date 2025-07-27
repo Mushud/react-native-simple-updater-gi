@@ -1,0 +1,16 @@
+{
+  "name": "react-native-simple-updater",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  },
+  "dependencies": {
+    "react-native-device-info": "^14.0.4",
+    "react-native-fs": "^2.20.0",
+    "react-native-mmkv": "^3.3.0",
+    "rn-fetch-blob": "^0.12.0"
+  }
+}
