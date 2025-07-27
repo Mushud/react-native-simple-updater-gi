@@ -1,10 +1,10 @@
-# 📦 react-native-simple-updater
+#  react-native-simple-updater
 
 A lightweight and customizable React Native update checker for Android apps. Supports automatic version checking, APK downloading, and installing — with support for Android 13+ install permissions and MMKV caching to prevent repeated downloads.
 
 ---
 
-## 🚀 Features
+##  Features
 
 - ✅ Auto or manual update checks  
 - ✅ APK download with progress UI  
@@ -15,7 +15,7 @@ A lightweight and customizable React Native update checker for Android apps. Sup
 
 ---
 
-## 📦 Installation
+##  Installation
 
 Install the library and required dependencies:
 
@@ -33,7 +33,7 @@ Also, ensure these are properly linked (if using older React Native versions).
 
 ---
 
-## 📥 API Response Format
+##  API Response Format
 
 Your `updateUrl` must return a JSON response structured like:
 
@@ -48,7 +48,7 @@ Your `updateUrl` must return a JSON response structured like:
 
 ---
 
-## 🧠 How It Works
+##  How It Works
 
 1. When the app loads, it optionally checks a remote endpoint (`updateUrl`) for version info.
 2. It compares the `version` from the response with the current app version using `react-native-device-info`.
@@ -61,9 +61,9 @@ Your `updateUrl` must return a JSON response structured like:
 
 ---
 
-## 🧪 Usage
+##  Usage
 
-### 🔁 Simple Usage with Auto Check & Manual Download
+###  Simple Usage with Auto Check & Manual Download
 
 ```jsx
 import UpdatePrompt from 'react-native-simple-updater';
@@ -75,7 +75,6 @@ export default function App() {
         updateUrl="https://api.yourserver.com/apps/myapp/latest"
         autoCheck={true}
         autoDownload={false}
-        buttonLabel="Update Now"
       />
       <MainApp />
     </>
@@ -83,31 +82,8 @@ export default function App() {
 }
 ```
 
-### 🛠 Custom Trigger Button
 
-If you want to style the update trigger button:
-
-```jsx
-<UpdatePrompt
-  updateUrl="https://api.yourserver.com/apps/myapp/latest"
-  autoCheck={true}
-  autoDownload={false}
-  ButtonComponent={
-    <TouchableOpacity
-      style={{
-        padding: 10,
-        backgroundColor: 'white',
-        borderRadius: 6,
-        alignSelf: 'center',
-      }}
-    >
-      <Text style={{ color: 'black' }}>🔥 Download Update</Text>
-    </TouchableOpacity>
-  }
-/>
-```
-
-### 📦 Auto Download on Detection
+###  Auto Download on Detection
 
 ```jsx
 <UpdatePrompt
@@ -119,19 +95,12 @@ If you want to style the update trigger button:
 
 ---
 
-## 🔧 Props
+##  Props
 
 | Prop               | Type        | Default     | Description                                                                 |
 |--------------------|-------------|-------------|-----------------------------------------------------------------------------|
 | `updateUrl`        | `string`    | —           | **Required.** URL that returns latest version and APK URL.                 |
-| `autoCheck`        | `boolean`   | `true`      | Automatically check for updates when component mounts.                     |
-| `autoDownload`     | `boolean`   | `false`     | Automatically download the update when detected.                           |
-| `buttonLabel`      | `string`    | `"Update"`  | Text for the default trigger button.                                       |
-| `ButtonComponent`  | `ReactNode` | —           | Custom React component to use instead of default button.                   |
-| `onUpdateStart`    | `Function`  | —           | Callback when download begins.                                             |
-| `onDownloadDone`   | `Function`  | —           | Callback when download completes.                                          |
-| `onInstall`        | `Function`  | —           | Callback when APK installation is triggered.                               |
-
+| `autoCheck`        | `boolean`   | `true`      | Automatically check for updates when component mounts.   
 ---
 
 ## 🔁 Manual Hook Usage
@@ -156,7 +125,7 @@ const {
 
 ---
 
-## 🛑 Android Permissions
+##  Android Permissions
 
 For Android 13+, installation of APKs requires runtime permission for unknown sources.
 
@@ -183,16 +152,16 @@ react-native-simple-updater/
 
 ---
 
-## 📈 Example Output States
+##  Example Output States
 
-- ✅ Update Available → Show button or auto download
-- ⬇️ Downloading... → Show progress
-- 🛠️ Install Pending → Show “Install Now” if not yet installed
-- 💤 No update → Renders nothing
+-  Update Available → Show button or auto download
+-  Downloading... → Show progress
+-  Install Pending → Show “Install Now” if not yet installed
+-  No update → Renders nothing
 
 ---
 
-## 💡 Tips
+##  Tips
 
 - Use `MMKV` to persist the last downloaded version and avoid re-downloading on every boot.
 - `installPending` will be true if the user didn’t install the last downloaded APK.
@@ -200,13 +169,13 @@ react-native-simple-updater/
 
 ---
 
-## 📃 License
+##  License
 
 MIT © 2025
 
 ---
 
-## 🙋 FAQ
+##  FAQ
 
 ### Will this install updates silently?
 
@@ -218,7 +187,7 @@ MIT © 2025
 
 ---
 
-## 👷 Contributing
+##  Contributing
 
 Want to improve this library?
 
@@ -229,6 +198,6 @@ Want to improve this library?
 
 ---
 
-## 📬 Contact
+##  Contact
 
 For questions or suggestions, open an issue or contact [Your Name] on GitHub.
